@@ -1,0 +1,21 @@
+{
+  "name": "rust-memory-game",
+  "version": "1.0.0",
+  "description": "A tiny game written in rust. It's inspired by IgorMinar's Memory-Game",
+  "scripts": {
+    "deploy": "trunk build --release --public-url=/rust-memory-game/ && gh-pages -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leftstick/rust-memory-game.git"
+  },
+  "author": "Howard.Zuo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/leftstick/rust-memory-game/issues"
+  },
+  "homepage": "https://github.com/leftstick/rust-memory-game#readme",
+  "devDependencies": {
+    "gh-pages": "^3.2.3"
+  }
+}
