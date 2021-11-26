@@ -3,13 +3,24 @@ use yew::prelude::*;
 use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 use crate::constant::CardName;
+use crate::state::DraftCard;
 
-#[derive(PartialEq, Properties, Clone)]
+#[derive(Properties, Clone)]
 pub struct Props {
     pub id: String,
     pub name: CardName,
     pub flipped: bool,
-    pub on_flip: Callback<Option<(String, CardName)>>,
+    pub on_flip: Callback<Option<DraftCard>>,
+}
+
+impl PartialEq for Props {
+    fn eq(&self, other: &Props) -> bool {
+        self.id == other.id && self.name == other.name && self.flipped == other.flipped
+    }
+
+    fn ne(&self, other: &Props) -> bool {
+        !self.eq(other)
+    }
 }
 
 pub struct ChessboardCard {
@@ -45,10 +56,7 @@ impl Component for ChessboardCard {
     }
 
     fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        if self.props.flipped != _props.flipped
-            || self.props.id.ne(&_props.id)
-            || self.props.name.ne(&_props.name)
-        {
+        if self.props.ne(&_props) {
             self.props.flipped = _props.flipped;
             self.props.id = _props.id;
             self.props.name = _props.name;
@@ -69,7 +77,10 @@ impl Component for ChessboardCard {
             if flipped {
                 None
             } else {
-                Some((id.clone(), name))
+                Some(DraftCard {
+                    id: id.clone(),
+                    name,
+                })
             }
         });
 

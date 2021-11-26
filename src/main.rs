@@ -7,15 +7,16 @@ use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 use gloo::timers::callback::{Interval, Timeout};
 
-use components::chess_board_card::ChessboardCard;
-use components::game_status_board::GameStatusBoard;
-use components::score_board::ScoreBoard;
-use constant::{CardName, GameFlipCardResult, Status};
-use state::State;
+use components::{
+    chess_board_card::ChessboardCard, game_status_board::GameStatusBoard, score_board::ScoreBoard,
+};
+
+use constant::{GameFlipCardResult, Status};
+use state::{DraftCard, State};
 
 pub enum Msg {
-    FlipCard(Option<(String, CardName)>),
-    RollbackCards([(String, CardName); 2]),
+    FlipCard(Option<DraftCard>),
+    RollbackCards([DraftCard; 2]),
     GameReset,
     SecPast,
     GameOver,

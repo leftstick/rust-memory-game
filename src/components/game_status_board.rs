@@ -4,11 +4,21 @@ use yew::{html, Component, ComponentLink, Html, ShouldRender};
 
 use crate::constant::Status;
 
-#[derive(Clone, PartialEq, Properties)]
+#[derive(Clone, Properties)]
 pub struct Props {
     pub status: Status,
     pub sec_past: u32,
     pub on_reset: Callback<()>,
+}
+
+impl PartialEq for Props {
+    fn eq(&self, other: &Props) -> bool {
+        self.status == other.status && self.sec_past == other.sec_past
+    }
+
+    fn ne(&self, other: &Props) -> bool {
+        !self.eq(other)
+    }
 }
 
 pub struct GameStatusBoard {
@@ -51,7 +61,7 @@ impl Component for GameStatusBoard {
     }
 
     fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        if self.props.status.ne(&_props.status) || self.props.sec_past != _props.sec_past {
+        if self.props.ne(&_props) {
             self.props.status = _props.status;
             self.props.sec_past = _props.sec_past;
             true

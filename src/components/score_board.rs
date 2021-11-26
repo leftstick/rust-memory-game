@@ -29,9 +29,7 @@ impl Component for ScoreBoard {
     }
 
     fn change(&mut self, _props: Self::Properties) -> ShouldRender {
-        if self.props.unresolved_card_pairs != _props.unresolved_card_pairs
-            || self.props.best_score != _props.best_score
-        {
+        if self.props.ne(&_props) {
             self.props.unresolved_card_pairs = _props.unresolved_card_pairs;
             self.props.best_score = _props.best_score;
             true

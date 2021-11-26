@@ -8,11 +8,34 @@ use serde::{Deserialize, Serialize};
 use crate::constant::{CardName, GameFlipCardResult, Status, KEY_BEST_SCORE};
 use crate::helper::shuffle_cards;
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct DraftCard {
+    pub id: String,
+    pub name: CardName,
+}
+impl PartialEq for DraftCard {
+    fn eq(&self, other: &DraftCard) -> bool {
+        self.id == other.id && self.name == other.name
+    }
+    fn ne(&self, other: &DraftCard) -> bool {
+        !self.eq(other)
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Card {
     pub id: String,
     pub flipped: bool,
     pub name: CardName,
+}
+
+impl PartialEq<DraftCard> for &mut Card {
+    fn eq(&self, other: &DraftCard) -> bool {
+        self.id == other.id && self.name == other.name
+    }
+    fn ne(&self, other: &DraftCard) -> bool {
+        !self.eq(other)
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -22,7 +45,7 @@ pub struct State {
     pub status: Status,
     pub cards: Vec<Card>,
     pub sec_past: u32,
-    pub last_card: Option<(String, CardName)>,
+    pub last_card: Option<DraftCard>,
 }
 
 impl State {
@@ -58,12 +81,10 @@ impl State {
         }
     }
 
-    pub fn flip_card(&mut self, card: (String, CardName)) -> GameFlipCardResult {
-        for c in self.cards.iter_mut() {
-            if card.0.eq(&c.id) && card.1.eq(&c.name) {
-                c.flipped = !c.flipped;
-            }
-        }
+    pub fn flip_card(&mut self, card: DraftCard) -> GameFlipCardResult {
+        self.cards.iter_mut().filter(|c| c.eq(&card)).for_each(|c| {
+            c.flipped = !c.flipped;
+        });
 
         let last_card = self.last_card.clone();
 
@@ -75,7 +96,7 @@ impl State {
             Some(last_card) => {
                 self.last_card = None;
 
-                if card.0.ne(&last_card.0) && card.1.eq(&last_card.1) {
+                if card.id.ne(&last_card.id) && card.name.eq(&last_card.name) {
                     self.unresolved_card_pairs = self.unresolved_card_pairs - 1;
 
                     if self.unresolved_card_pairs == 0 {
@@ -92,15 +113,20 @@ impl State {
         }
     }
 
-    pub fn flip_card_rollback(&mut self, cards: [(String, CardName); 2]) {
-        for c in self.cards.iter_mut() {
-            if cards[0].0.eq(&c.id) && cards[0].1.eq(&c.name) {
+    pub fn flip_card_rollback(&mut self, cards: [DraftCard; 2]) {
+        self.cards
+            .iter_mut()
+            .filter(|c| {
+                cards.contains(
+                    &(DraftCard {
+                        id: c.id.clone(),
+                        name: c.name,
+                    }),
+                )
+            })
+            .for_each(|c| {
                 c.flipped = !c.flipped;
-            }
-            if cards[1].0.eq(&c.id) && cards[1].1.eq(&c.name) {
-                c.flipped = !c.flipped;
-            }
-        }
+            });
     }
 
     pub fn sec_past_tick(&mut self) {

@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use strum_macros::{Display, EnumIter};
 
+use crate::state::DraftCard;
+
 pub const KEY_BEST_SCORE: &str = "rust.memory.game.best.score";
 
 #[derive(Clone, Copy, Debug, EnumIter, Display, PartialEq, Serialize, Deserialize)]
@@ -26,7 +28,7 @@ pub enum Status {
 pub enum GameFlipCardResult {
     GameOver,
     GameContinue,
-    CardRollback([(String, CardName); 2]),
+    CardRollback([DraftCard; 2]),
 }
 
 pub const RAW_CARDS: [CardName; 16] = [
