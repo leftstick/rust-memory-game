@@ -142,8 +142,7 @@ impl State {
     }
 
     pub fn save_best_score(&mut self) {
-        if self.best_score > self.sec_past {
-            let _ = LocalStorage::set(KEY_BEST_SCORE, self.sec_past);
-        }
+        (self.best_score > self.sec_past).then(|| LocalStorage::set(KEY_BEST_SCORE, self.sec_past));
+        ()
     }
 }
