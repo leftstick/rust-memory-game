@@ -74,14 +74,10 @@ impl Component for ChessboardCard {
         let onclick = self.props.on_flip.reform(move |e: MouseEvent| {
             e.stop_propagation();
 
-            if flipped {
-                None
-            } else {
-                Some(DraftCard {
-                    id: id.clone(),
-                    name,
-                })
-            }
+            (!flipped).then(|| DraftCard {
+                id: id.clone(),
+                name,
+            })
         });
 
         html! {

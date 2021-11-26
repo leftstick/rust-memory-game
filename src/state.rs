@@ -113,6 +113,14 @@ impl State {
         }
     }
 
+    pub fn try_to_start_game(&mut self) -> bool {
+        if self.status == Status::READY {
+            self.status = Status::PLAYING;
+            return true;
+        }
+        false
+    }
+
     pub fn flip_card_rollback(&mut self, cards: [DraftCard; 2]) {
         self.cards
             .iter_mut()

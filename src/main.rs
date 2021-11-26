@@ -11,7 +11,7 @@ use components::{
     chess_board_card::ChessboardCard, game_status_board::GameStatusBoard, score_board::ScoreBoard,
 };
 
-use constant::{GameFlipCardResult, Status};
+use constant::GameFlipCardResult;
 use state::{DraftCard, State};
 
 pub enum Msg {
@@ -51,12 +51,12 @@ impl Component for Model {
                 None => false,
                 Some(card) => {
                     // try to start game
-                    if self.state.status == Status::READY {
-                        self.state.status = Status::PLAYING;
-                        let link = self.link.clone();
+                    let link = self.link.clone();
+                    self.state.try_to_start_game().then(|| {
                         self.sec_past_timer =
                             Some(Interval::new(1000, move || link.send_message(Msg::SecPast)));
-                    }
+                    });
+
                     let result = self.state.flip_card(card);
                     match result {
                         GameFlipCardResult::CardRollback(cards) => {
