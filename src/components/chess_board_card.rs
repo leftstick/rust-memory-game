@@ -82,7 +82,7 @@ impl Component for ChessboardCard {
 
         html! {
             <div class="chess-board-card-container">
-                <div class={classes!("card", self.props.flipped.then(|| "flipped"))} onclick={onclick}>
+                <div class={classes!("card", flipped.then(|| "flipped"))} onclick={onclick}>
                     <img class="front" src={self.get_link_by_cardname()} />
                     <img class="back" src="public/back.png" />
                 </div>
