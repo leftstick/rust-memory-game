@@ -1,8 +1,6 @@
 // use log::info;
 
 use gloo::storage::{LocalStorage, Storage};
-use rand::seq::SliceRandom;
-use rand::thread_rng;
 use serde::{Deserialize, Serialize};
 
 use crate::constant::{CardName, GameFlipCardResult, Status, KEY_BEST_SCORE};
@@ -50,27 +48,6 @@ pub struct State {
 
 impl State {
     pub fn reset() -> State {
-        let mut raw_cards = vec![
-            CardName::EightBall,
-            CardName::Kronos,
-            CardName::BakedPotato,
-            CardName::Dinosaur,
-            CardName::Rocket,
-            CardName::SkinnyUnicorn,
-            CardName::ThatGuy,
-            CardName::Zeppelin,
-            CardName::EightBall,
-            CardName::Kronos,
-            CardName::BakedPotato,
-            CardName::Dinosaur,
-            CardName::Rocket,
-            CardName::SkinnyUnicorn,
-            CardName::ThatGuy,
-            CardName::Zeppelin,
-        ];
-
-        raw_cards.shuffle(&mut thread_rng());
-
         State {
             unresolved_card_pairs: 8,
             best_score: LocalStorage::get(KEY_BEST_SCORE).unwrap_or_else(|_| 9999),
